@@ -13,11 +13,14 @@ Documenting the Deep Learning Process
 l2正则化(权重缩减):λ/2m ‖w‖^2      
 l1正则化:λ/2m ‖w‖        结果中w稀疏含极多0，但并非对模型压缩
 
-λ↑ w↓ (相当于降低很多隐藏单元权重) z↑ 模型接近线性模型，过拟合度降低
+λ↑ w↓ (相当于降低很多隐藏单元权重) z↓ z范围小则在激活函数上接近线性，模型也贴近线性模型，过拟合度降低
 
-dropout:随机神经元消失本质简化网络
+dropout正则化:随机神经元消失本质简化网络
 
 inverted dropout:
 d3 = np.random.rand(a3.shape[0],a3.shape[1]) < keep-prop
 a3 = np.multply(a3,d3)
 a3 /= keep-prop #修正不改变z4期望值
+
+early stoping:在验证集准确率与训练集准确率差别增大时提前结束训练
+data argumentation：增大数据集，或者修改原图片扩充数据集
