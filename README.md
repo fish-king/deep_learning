@@ -61,3 +61,39 @@ b = b - αvdb
 ps:对于dw,db参数为1的momentum，应修改α使αvdw,αvdb倍率不变
 
 β常设为0.9,Robust
+
+RMSprop梯度下降
+sdw = βsdw + (1-β)dw²
+sdb = βsdb + (1-β)db²
+w = w - α(dw/(√sdw+ε))
+b = b - α(db/(√sdb+ε))
+
+ε = 10^-8  也可省略，防止sdw，sdb为0情况
+类似于momentum也是减缓非下降方向的抖动，不过momentum可以理解为矢量,RMSprop为标量，若sdb抖动过大，b降幅变小，降低抖动
+
+Adam算法
+vdw = 0,sdw = 0,vdb = 0,sdb = 0
+vdw = β₁vdw + (1-β₁)dw
+vdb = β₁vdb + (1-β₁)db
+sdw = β₂sdw + (1-β₂)dw²
+sdb = β₂sdb + (1-β₂)db²
+#初值修正
+vdw = vdw/(1-β₁^t)
+vdb = vdb/(1-β₁^t)
+sdw = sdw/(1-β₂^t)
+sdw = sdw/(1-β₂^t)
+
+w = w - α(vdw/(√sdw+ε))
+b = b - α(vdb/(√sdb+ε))
+
+常用取值：
+学习率自取
+β₁ = 0.9
+β₂ = 0.999
+ε = 10^-8  也可省略，影响不大
+
+学习率衰减有多种方式，自己选择
+
+鞍点，因维度高，故所有维度导数均为0的点几乎不存在，因此几乎无局部最优问题，但导数过小，训练速度会因此减缓，我们通过以上三种算法优化训练速度，相当于加大推动梯度下降方向的力
+学习率衰减
+α = 1/(1+decayrate*epohnum)  * α0
