@@ -5,8 +5,8 @@
 
 | 1  1  1| 3×3水平检测滤波
 | 0  0  0|
-|-1 -2 -3|4w15w16
-深度学习可将滤波器参数作为学习对象，得到不同边缘检测的滤波
+|-1 -1 -1|
+深度学习将滤波器参数作为学习对象，得到不同边缘检测的滤波
 |w1 w2 w3 |
 |w4 w5 w6 |
 |w7 w8 w9 |
@@ -14,3 +14,18 @@
 padding:对图像进行补充，一般n*n图像经m*m滤波器卷积后，图像大小变为n-m+1*n-m+1大小(valid convolution)，若要求图像大小不改变(same convolution)，则对原图像扩充，padding= (f-1)/2
 
 strike:每次卷积的步长
+
+滤波器
+f[l] = filtersize
+p[l] = padding
+s[l] = strike
+nc[l] = num of filters
+l层滤波器大小为f[l] × f[l] × nc[l-1]
+
+图像
+input:nh[l-1]×nw[l-1] × nc[l-1]
+output:nh[l]×nw[l] × nc[l]
+nw = [(nw[l-1] + 2p[l] - f[l]) / s[l] + 1]向下取整
+nh = [(nh[l-1] + 2p[l] - f[l]) / s[l] + 1]向下取整
+weights: f[l] × f[l] × nc[l-1] × nc[l]
+bias: nc[l]  (1 × 1 × 1 × nc[l])
