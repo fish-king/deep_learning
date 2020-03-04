@@ -6,10 +6,12 @@
 | 1  1  1| 3×3水平检测滤波
 | 0  0  0|
 |-1 -1 -1|
-深度学习将滤波器参数作为学习对象，得到不同边缘检测的滤波
+深度学习将滤波器参数作为学习对象，得到不同特征检测的滤波
 |w1 w2 w3 |
 |w4 w5 w6 |
 |w7 w8 w9 |
+
+卷积层:对图像特征的提取
 
 padding:对图像进行补充，一般n*n图像经m*m滤波器卷积后，图像大小变为n-m+1*n-m+1大小(valid convolution)，若要求图像大小不改变(same convolution)，则对原图像扩充，padding= (f-1)/2
 
@@ -29,3 +31,13 @@ nw = [(nw[l-1] + 2p[l] - f[l]) / s[l] + 1]向下取整
 nh = [(nh[l-1] + 2p[l] - f[l]) / s[l] + 1]向下取整
 weights: f[l] × f[l] × nc[l-1] × nc[l]
 bias: nc[l]  (1 × 1 × 1 × nc[l])
+
+池化层:不包含学习参数，一般不单独认为一层
+filter size:滤波器大小
+strike：每次步长
+
+maxpooling:选取滤波器size内最大的一个替代，起到特征强化的左右(常用)
+averagepooling：选取滤波器size内均值一个替代，在较深层次网络中使用
+
+全连接层:卷积层结果拉伸成一维,进行标准神经网络训练
+model.add(layers.Flatten()) 一步到位！
