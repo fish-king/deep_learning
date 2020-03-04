@@ -6,3 +6,5 @@ Documenting the Deep Learning Process
 常用超参数及释义：hyper-parameters
 
 卷积神经网络:cnn
+
+mnist手写字识别: LeNet-5网络，keras,Adam
