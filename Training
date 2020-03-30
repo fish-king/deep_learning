@@ -1,0 +1,56 @@
+#冻结部分层
+for layer in tobefreese.layers:
+    layer.trainable = False
+
+#权重读写
+model_body.save_weights(topless_yolo_path)
+model_body.load_weights(topless_yolo_path)
+
+#EarlyStopping是用于提前停止训练的callbacks。具体地，可以达到当训练集上的loss不在减小（即减小的程度小于某个阈值）的时候停止继续训练。
+keras.callbacks.callbacks.EarlyStopping(monitor='val_loss', min_delta=0, patience=0, verbose=0, mode='auto', baseline=None, restore_best_weights=False)
+monitor: 监控的数据接口，有’acc’,’val_acc’,’loss’,’val_loss’等等。正常情况下如果有验证集，就用’val_acc’或者’val_loss’。
+min_delta：增大或减小的阈值，只有大于这个部分才算作improvement。这个值的大小取决于monitor，也反映了你的容忍程度。加上观察到训练过程中存在抖动的情况（即先下降后上升），所以适当增大容忍程度，最终设为0.003%。
+patience：能够容忍多少个epoch内都没有improvement。这个设置其实是在抖动和真正的准确率下降之间做tradeoff。
+mode: 就’auto’, ‘min’, ‘,max’三个可能。如果知道是要上升还是下降，建议设置一下。
+
+#ModelCheckpoint
+keras.callbacks.ModelCheckpoint(filepath,monitor='val_loss',verbose=0,save_best_only=False, save_weights_only=False, mode='auto', period=1) 
+'''
+参数说明：
+filename：字符串，保存模型的路径
+monitor：需要监视的值
+verbose：信息展示模式，0或1(checkpoint的保存信息，类似Epoch 00001: saving model to ...)
+save_best_only：当设置为True时，监测值有改进时才会保存当前的模型（ the latest best model according to the quantity monitored will not be overwritten）
+mode：‘auto’，‘min’，‘max’之一，在save_best_only=True时决定性能最佳模型的评判准则，例如，当监测值为val_acc时，模式应为max，当监测值为val_loss时，模式应为min。在auto模式下，评价准则由被监测值的名字自动推断。
+save_weights_only：若设置为True，则只保存模型权重，否则将保存整个模型（包括模型结构，配置信息等）
+period：CheckPoint之间的间隔的epoch数
+'''
+#自定义callback类
+class RocAucMetricCallback(keras.callbacks.Callback):
+    def __init__(self, predict_batch_size=1024):
+        super(RocAucMetricCallback, self).__init__()
+        self.predict_batch_size = predict_batch_size
+ 
+    def on_batch_begin(self, batch, logs={}):
+        pass
+ 
+    def on_batch_end(self, batch, logs={}):
+        pass
+ 
+    def on_train_begin(self, logs={}):
+        if not ('val_roc_auc' in self.params['metrics']):
+            self.params['metrics'].append('val_roc_auc')
+ 
+    def on_train_end(self, logs={}):
+        pass
+ 
+    def on_epoch_begin(self, epoch, logs={}):
+        pass
+ 
+    def on_epoch_end(self, epoch, logs={}):
+        logs['roc_auc'] = float('-inf')
+        if (self.validation_data):
+            logs['roc_auc'] = roc_auc_score(self.validation_data[1],
+                                            self.model.predict(self.validation_data[0],
+                                                               batch_size=self.predict_batch_size))
+            print('ROC_AUC - epoch:%d - score:%.6f' % (epoch + 1, logs['roc_auc']))
