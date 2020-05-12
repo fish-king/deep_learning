@@ -1,0 +1,170 @@
+seaborn库作为matplot的补充库，用于绘图。
+
+格式sinplot绘图
+#采用seaborn默认设置的组合
+sns.set()
+#其中一种风格，背景白色有横条刻度，dark(黑色无网格线)，ticks（白色有刻度尺），white（白色无刻度线）
+sns.set_style("whitegird")
+#去掉上边和右边框线
+sns.despine()	
+#图和轴线的距离，例如10
+sns.despine(offset=10)	
+#隐藏左边的轴
+sns.despine(left=ture)	
+#paper/talk/poster/notebook每个单元格的大小
+sns.set_context("paper")	
+#font_scale字体的大小
+sns.set_context("paper"，font_scale=1.5)	
+#lines.linewidth线条的粗细
+sns.set_context("paper"，font_scale=1.5，rc={"lines.linewidth":2.5})	
+
+颜色
+#不写参数则默认颜色，能传入任何matplotlib所支持的颜色，默认6个颜色
+sns.color_palette()	
+#使用hls的颜色空间，传出8个颜色
+sns.palplot(sns.color_palette(“hls”,8))	
+#8中颜色，饱和度5，亮度9
+sns.palplot(sns.hls_palette(8,l=5,s=9))	
+#色调线性变换
+sns.palplot(sns.color_palette(“cubehelix”,8))	
+#颜色变换区间
+sns.palplot(sns.cubehelix_palette(8，start=.75,rot=-.150))	
+#paired出现5对颜色
+sns.palplot(sns.color_palette(“Paired”,10))
+#连续的画板，颜色默认由浅到深
+sns.palplot(sns.color_palette(“Blues"))	
+#渐变由深到浅
+sns.palplot(sns.color_palette(“Blues_r"))	
+#浅色调的绿色由浅到深
+sns.palplot(sns.light_palette(“green”))	
+#离散型的颜色
+sns.palplot(sns.light_palette(210,90,60)，input="husl")	
+#深色调的绿色由浅到深
+sns.palplot(sns.dark_palette(“green”))	
+#深色调的绿色由深到浅
+sns.palplot(sns.dark_palette(“green”，reverse=True))	
+#设置所有图的颜色
+sns.set_palette()	
+
+直方图
+sns.displot(x)
+#bins把当前数据分成几大块
+sns.displot(x,bins=5)
+#分布线
+sns.displot(x,bins=5，fit=stats.gamma)	
+
+散点图+直方图
+sns.joinplot(x="",y="")
+#kind通过颜色深度分辨数据出现次数多少
+sns.joinplot(x="",y=""，kind="hex")
+#pairplot把数据集中几种特征之间两两的关系都画出来
+sns.pairplot(数据集)	
+
+回归
+#regplot(),lmplot()都可以画回归图，推荐regplot()
+sns.swarplot(x="",y="",data=)
+#加上hue参数作为指标
+sns.swarplot(x="",y="",,hue="sex",data=)
+
+sns.stripplot(x="",y="",data=)
+#加上抖动，把点进行左右偏移
+sns.stripplot(x="",y="",data=,jitter=True)	
+
+sns.regplot(x="变量名",y="变量名",data=数据集)
+#jitter在原始数据集上做个抖动,便于回归
+sns.regplot(x="变量名",y="变量名",data=数据集，x_jitter=.05)	
+
+
+盒图-数据集中有离群点
+#ortent="h"指定横竖
+sns.plot(x="",y="",data=)
+
+
+小提琴图
+sns.violinplot(x="",y="",data=)
+
+条形图
+#hue表示标注
+sns.barplot(x="",y="",data=,hue="")
+
+
+点图
+sns.pointplot()
+参数：palette,markers,linestyles
+
+多层面板分类图
+sns.factorplot()
+#kind=""	指定画图的类型，指定为bar则画直方图 size=	大小 aspect=	长宽比
+
+facegrid
+sns.FaceGrid()
+g=sns.FaceGrid()
+g.map(plt.bar,"",alpha)
+
+'''
+plt.	画图类型
+alpha	透明程度
+fit_reg=True/False	是否加回归线
+x_jitter=.5	加抖动
+color=".3"	颜色
+size	大小
+aspect	长宽比
+linewidth	线宽
+var=["",""]	指定的特征来画图
+palette=""	调色板
+g.set_axis_label("",“”)	指定轴注释
+g.add_legend()	加入标注
+g.set(xticks=[],yticks=[])	指定XY轴取值范围
+g.fig.subplots_adjust(wspace=,hspace=)	各个子图之间的间距
+g.mapdiag(plt.hist)	指定对角线上画hist图
+g.map_offdiag(plt.scatter)	指定非对角线上画什么图
+'''
+
+热度图
+heat_map=sns.heatmap(数据名)
+'''
+vmin=,vmax=	颜色取值区间的设置
+center=0	指定0为中心
+annit=True	加入具体数字
+fmt="d"	十进制的值
+linewidth=.05	网格线粗细
+cmap=""	指定调色板
+'''
+
+
+
+statistics库用于数据统计
+
+#平均值
+statistics.mean(data)
+
+#调和平均数
+statistics.harmonic_mean([1,2,3])
+1.6363636363636365
+
+#中值
+statistics.median(data)
+#小中值
+statistics.median_low(data)
+#大中值
+statistics.median_high(data)
+#用组距式来求中位数
+statistics.median_grouped(data, interval=1)
+公式：中位数=中位数所在组下限+{[(样本总数/2-到中位数所在组下限的累加次数)/中位数所在组的次数]*中位数的组距}
+参数说明：
+interval：组距
+
+#众数
+statistics.mode(data)
+
+#总体标准差
+statistics.pstdev(data, mu=None)
+
+#总体方差
+statistics.pvariance(data, mu=None)
+
+#样本标准差
+statistics.stdev(data, xbar=None)
+
+#样本方差
+statistics.variance(data, xbar=None)
